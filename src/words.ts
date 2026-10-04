@@ -1,0 +1,35 @@
+import type { Category } from './types.js'
+
+export interface WordPair { main: string; alternate: string; category: Category }
+
+export const wordPairs: WordPair[] = [
+  { main: 'Geburtstag', alternate: 'Hochzeit', category: 'Allgemein' },
+  { main: 'Sommer', alternate: 'Frühling', category: 'Allgemein' },
+  { main: 'Katze', alternate: 'Hund', category: 'Tiere' },
+  { main: 'Löwe', alternate: 'Tiger', category: 'Tiere' },
+  { main: 'Delfin', alternate: 'Hai', category: 'Tiere' },
+  { main: 'Pizza', alternate: 'Burger', category: 'Essen & Trinken' },
+  { main: 'Kaffee', alternate: 'Tee', category: 'Essen & Trinken' },
+  { main: 'Apfel', alternate: 'Birne', category: 'Essen & Trinken' },
+  { main: 'Bäcker', alternate: 'Koch', category: 'Berufe' },
+  { main: 'Arzt', alternate: 'Pfleger', category: 'Berufe' },
+  { main: 'Lehrer', alternate: 'Professor', category: 'Berufe' },
+  { main: 'Hotel', alternate: 'Hostel', category: 'Orte' },
+  { main: 'Schule', alternate: 'Universität', category: 'Orte' },
+  { main: 'Meer', alternate: 'See', category: 'Orte' },
+  { main: 'Dusche', alternate: 'Badewanne', category: 'Gegenstände' },
+  { main: 'Bus', alternate: 'Bahn', category: 'Gegenstände' },
+  { main: 'Gabel', alternate: 'Löffel', category: 'Gegenstände' },
+  { main: 'Netflix', alternate: 'YouTube', category: 'Filme & Serien' },
+  { main: 'Kino', alternate: 'Theater', category: 'Filme & Serien' },
+  { main: 'Detektiv', alternate: 'Superheld', category: 'Filme & Serien' },
+  { main: 'Schach', alternate: 'Dame', category: 'Spiele' },
+  { main: 'Minecraft', alternate: 'Fortnite', category: 'Spiele' },
+  { main: 'Puzzle', alternate: 'Memory', category: 'Spiele' },
+  { main: 'Fußball', alternate: 'Handball', category: 'Sport' },
+  { main: 'Tennis', alternate: 'Badminton', category: 'Sport' },
+  { main: 'Ski', alternate: 'Snowboard', category: 'Sport' },
+  { main: 'Berg', alternate: 'Vulkan', category: 'Natur' },
+  { main: 'Regen', alternate: 'Schnee', category: 'Natur' },
+  { main: 'Wald', alternate: 'Dschungel', category: 'Natur' },
+]
