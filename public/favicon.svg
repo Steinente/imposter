@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Imposter</title>
+  <desc id="description">Eine maskierte Gestalt mit goldenen Augen</desc>
+  <defs>
+    <linearGradient id="background" x1="96" y1="48" x2="416" y2="464" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="hood" x1="164" y1="92" x2="354" y2="432" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4b3b63"/>
+      <stop offset="1" stop-color="#281f3a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="178" y1="232" x2="334" y2="286" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe29a"/>
+      <stop offset="1" stop-color="#d4a72c"/>
+    </linearGradient>
+    <clipPath id="circle">
+      <circle cx="256" cy="256" r="240"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#circle)">
+    <circle cx="256" cy="256" r="240" fill="url(#background)"/>
+    <circle cx="256" cy="256" r="220" fill="none" stroke="#d4a72c" stroke-opacity=".22" stroke-width="8"/>
+
+    <path fill="#211a31" d="M40 512c9-112 81-181 151-205h130c70 24 142 93 151 205H40Z"/>
+    <path fill="url(#hood)" d="M100 512c10-100 63-167 115-191-64-45-76-124-40-198 20-42 51-77 81-101 30 24 61 59 81 101 36 74 24 153-40 198 52 24 105 91 115 191H100Z"/>
+
+    <path fill="#0b1220" d="M256 106c-67 0-116 75-108 156 5 61 48 115 108 115s103-54 108-115c8-81-41-156-108-156Z"/>
+    <path fill="#172033" d="M159 225c26-45 62-67 97-67s71 22 97 67l-13 81c-25 44-53 65-84 65s-59-21-84-65l-13-81Z"/>
+
+    <path fill="#0b1220" d="M145 228c67-34 155-34 222 0l-16 79c-57-22-133-22-190 0l-16-79Z"/>
+    <path fill="url(#gold)" d="M180 246c29-12 54-10 72 7-20 20-47 25-77 13l5-20Zm152 0c-29-12-54-10-72 7 20 20 47 25 77 13l-5-20Z"/>
+    <circle cx="218" cy="256" r="7" fill="#0f172a"/>
+    <circle cx="294" cy="256" r="7" fill="#0f172a"/>
+
+    <path fill="#d4a72c" d="M256 393c-27 0-50-11-66-32 20 10 42 15 66 15s46-5 66-15c-16 21-39 32-66 32Z" opacity=".75"/>
+    <path fill="#1e293b" d="m149 512 29-143 78 55 78-55 29 143H149Z"/>
+    <path fill="#d4a72c" d="m256 424-23 88h46l-23-88Z"/>
+  </g>
+
+  <circle cx="256" cy="256" r="240" fill="none" stroke="#d4a72c" stroke-width="16"/>
+</svg>
