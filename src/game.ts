@@ -6,6 +6,18 @@ export const POINTS = { crewWin: 1, imposterWin: 2 } as const
 
 const randomItem = <T>(items: readonly T[]): T => items[Math.floor(Math.random() * items.length)]!
 
+export function createSpeakerOrder(players: Player[], previousOrder: string[] = []): string[] {
+  const order = players.filter((player) => player.connected).map((player) => player.id)
+  for (let index = order.length - 1; index > 0; index--) {
+    const target = Math.floor(Math.random() * (index + 1))
+    const current = order[index]!
+    order[index] = order[target]!
+    order[target] = current
+  }
+  if (order.length > 1 && order.every((id, index) => id === previousOrder[index])) order.push(order.shift()!)
+  return order
+}
+
 export function choosePair(config: GameConfig, used: Set<string>): WordPair {
   const eligible = wordPairs.filter((pair) => config.categories.includes(pair.category))
   if (!eligible.length) throw new Error('Für diese Kategorien sind keine Wörter vorhanden.')
@@ -31,21 +43,23 @@ export function chooseImposter(players: Player[], previous: string | null): Play
 export function createRound(lobby: Lobby): RoundState {
   const imposter = chooseImposter(lobby.players, lobby.lastImposterId)
   const pair = choosePair(lobby.config, lobby.usedPairs)
-  const starters = lobby.players.filter((player) => player.connected && player.id !== lobby.round?.starterId)
-  const starter = randomItem(starters.length ? starters : lobby.players.filter((player) => player.connected))
+  const speakerOrderIds = createSpeakerOrder(lobby.players, lobby.round?.speakerOrderIds)
   imposter.imposterRounds += 1
   lobby.lastImposterId = imposter.id
   return {
     number: (lobby.round?.number ?? 0) + 1, imposterId: imposter.id,
     mainWord: pair.main, imposterWord: pair.alternate, category: pair.category,
-    starterId: starter.id, clueRound: 1, confirmed: new Set(), votes: new Map(),
+    starterId: speakerOrderIds[0]!, speakerOrderIds, clueRound: 1, confirmed: new Set(), votes: new Map(),
     runoffCandidates: [], runoffUsed: false, selectedId: null, voteCounts: {}, winner: null, guessCorrect: null,
   }
 }
 
-export function tally(round: RoundState, playerIds: string[]): { tied: string[]; counts: Record<string, number> } {
+export function tally(round: RoundState, playerIds: string[], voterIds: string[] = playerIds): { tied: string[]; counts: Record<string, number> } {
   const counts = Object.fromEntries(playerIds.map((id) => [id, 0]))
-  for (const target of round.votes.values()) counts[target] = (counts[target] ?? 0) + 1
+  const eligibleVoters = new Set(voterIds)
+  for (const [voterId, target] of round.votes) {
+    if (eligibleVoters.has(voterId)) counts[target] = (counts[target] ?? 0) + 1
+  }
   const max = Math.max(...Object.values(counts))
   return { tied: Object.keys(counts).filter((id) => counts[id] === max), counts }
 }
@@ -85,6 +99,7 @@ export function buildView(lobby: Lobby, self: Player, hasPassword = false): Clie
     })),
     round: round ? {
       number: round.number, clueRound: round.clueRound, starterId: round.starterId,
+      speakerOrderIds: round.speakerOrderIds,
       confirmedCount: round.confirmed.size, votedCount: round.votes.size,
       allowedCandidateIds: voting ? eligible.filter((id) => id !== self.id) : [], privateReveal,
       selectedId: resolved ? round.selectedId : null, voteCounts: resolved ? round.voteCounts : null,

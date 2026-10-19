@@ -43,6 +43,7 @@ h1 { margin-bottom: 6px; }
 .lobby-share-icon { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
 .lobby-copy-row { margin-top: 8px; }
 .lobby-actions { margin-top: 16px; }
+.lobby-kick { margin-left: auto; min-height: 36px; padding: 6px 10px; }
 .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .spread { display: flex; gap: 14px; justify-content: space-between; align-items: center; }
 .label { display: block; margin: 0 0 6px; color: var(--muted); font-size: .9rem; }
@@ -97,6 +98,8 @@ h1 { margin-bottom: 6px; }
 .waiting-list li { padding: 5px 9px; border: 1px solid var(--border); border-radius: 999px; background: rgb(15 23 42 / .55); color: var(--muted); font-size: .9rem; }
 .vote-complete { margin: 14px 0; color: #86efac; font-weight: 700; }
 .guess-form { display: grid; gap: 12px; width: min(100%, 460px); margin: 20px auto 0; text-align: left; }
+.speaker-order { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 9px; margin: 16px 0; padding: 0; list-style: none; }
+.speaker-order li { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 11px; background: rgb(15 23 42 / .4); }
 .footer-note { margin-top: 12px; text-align: center; color: var(--muted); font-size: .8rem; }
 .lobby-list-title { margin: 0; }
 .lobby-list-grid { display: grid; gap: 10px; margin-top: 12px; }

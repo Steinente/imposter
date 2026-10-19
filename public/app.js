@@ -10,6 +10,7 @@ const CATEGORIES = ['Allgemein', 'Tiere', 'Essen & Trinken', 'Berufe', 'Orte', '
 const tokenKey = 'imposter.sessionToken'
 const nameKey = 'imposter.playerName'
 const languageKey = 'imposter.language'
+const configKey = 'imposter.gameConfig'
 const token = localStorage.getItem(tokenKey) || crypto.randomUUID()
 localStorage.setItem(tokenKey, token)
 
@@ -18,33 +19,33 @@ const TEXT = {
     language: 'Sprache', subtitle: 'Erstelle eine Multiplayer-Lobby oder tritt einer bei', playerName: 'Spielername',
     createLobby: 'Lobby erstellen', joinLobby: 'Lobby beitreten', lobbyCode: 'Lobby-Code', join: 'Beitreten', passwordOptional: 'Lobby-Passwort (optional)', passwordRequired: 'Lobby-Passwort (falls erforderlich)', passwordShort: 'Lobby-Passwort', passwordProtected: 'Passwortgeschützt',
     openLobbies: 'Offene Lobbys', noLobbies: 'Aktuell sind keine offenen Lobbys verfügbar.', waiting: 'Wartet', running: 'Läuft', players: 'Spieler', player: 'Spieler', you: 'du', connected: 'Verbunden', disconnected: 'Getrennt', host: 'Host',
-    copyCode: 'Code kopieren', copied: 'Kopiert', copyFailed: 'Kopieren fehlgeschlagen.', shareLobby: 'Lobby teilen', shareTitle: 'Imposter-Lobby', shareText: 'Tritt meiner Imposter-Lobby {code} bei.', leaveLobby: 'Lobby verlassen', startGame: 'Spiel starten', minPlayers: 'Mindestens 3 verbundene Spieler werden benötigt.',
+    copyCode: 'Code kopieren', copied: 'Kopiert', copyFailed: 'Kopieren fehlgeschlagen.', shareLobby: 'Lobby teilen', shareTitle: 'Imposter-Lobby', shareText: 'Tritt meiner Imposter-Lobby {code} bei.', leaveLobby: 'Lobby verlassen', startGame: 'Spiel starten', kickPlayer: 'Entfernen', kickedFromLobby: 'Du wurdest vom Host aus der Lobby entfernt.', minPlayers: 'Mindestens 3 verbundene Spieler werden benötigt.',
     settings: 'Spieleinstellungen', settingsHost: 'Du kannst die Regeln bis zum Start ändern.', settingsGuest: 'Nur der Host kann diese Regeln ändern.', mode: 'Spielmodus', rounds: 'Runden', roundsInfo: 'Legt fest, wie viele Runden insgesamt gespielt werden.', clueRounds: 'Hinweisrunden', clueRoundsInfo: 'Legt fest, wie viele Gesprächs- und Hinweisrunden vor jeder Abstimmung gespielt werden.', categories: 'Wortkategorien', categoriesInfo: 'Bestimmt, aus welchen Kategorien die Wörter für das Spiel ausgewählt werden.', allCategories: 'Alle Kategorien',
     classicInfo: 'Der Imposter erhält kein Wort und weiß, dass er der Imposter ist.', hiddenInfo: 'Der Imposter erhält ein anderes Wort. Niemand weiß, wer der Imposter ist – auch der Imposter selbst nicht.',
     abort: 'Spiel abbrechen', lobby: 'Lobby', points: 'P', roundOf: 'Runde {current} von {total}',
     hiddenSafely: 'Sicher verborgen', hiddenText: 'Deine Information ist nicht mehr sichtbar.', yourRole: 'Deine Rolle', noWord: 'Du hast kein Wort. Höre aufmerksam zu und bleibe unentdeckt.', yourWord: 'Dein Wort', rememberWord: 'Präge es dir ein und beschreibe es später, ohne es zu nennen.',
     secretInfo: 'Geheime Information', lookPrivately: 'Schau diskret auf deinen Bildschirm.', confirmedWaiting: 'Bestätigt – warte auf die anderen', understood: 'Gesehen und verstanden', ready: 'Bereit', countOf: '{current} von {total}',
-    cluePhase: 'Hinweisphase {current} von {total}', describeWord: 'Beschreibt euer Wort, ohne es direkt zu nennen.', starter: 'Startperson', begins: '{name} beginnt', talkTogether: 'Spielt die Gesprächsrunde gemeinsam am Tisch.', nextClue: 'Nächste Hinweisrunde', startVote: 'Abstimmung starten', hostContinues: 'Der Host startet den nächsten Abschnitt.',
+    cluePhase: 'Hinweisphase {current} von {total}', describeWord: 'Beschreibt euer Wort, ohne es direkt zu nennen.', speakerOrder: 'Ansagereihenfolge', speakingOrderHint: 'Gebt eure Hinweise in dieser Reihenfolge.', talkTogether: 'Spielt die Gesprächsrunde gemeinsam am Tisch.', nextClue: 'Nächste Hinweisrunde', startVote: 'Abstimmung starten', hostContinues: 'Der Host startet den nächsten Abschnitt.',
     runoff: 'Stichwahl', whoImposter: 'Wer ist der Imposter?', runoffHint: 'Nur die meistgewählten Personen stehen erneut zur Wahl.', voteFinalHint: 'Deine Stimme ist nach dem Absenden final.', voted: 'Stimme abgegeben', submitVote: 'Stimme final abgeben', votesCast: 'Abgestimmt', waitingForVotes: 'Noch ausstehend', allVotesSubmitted: 'Alle Stimmen wurden abgegeben.', votesSecret: 'Die Auswahl der anderen bleibt bis zur Auflösung geheim.',
     caught: 'Der Imposter wurde gefunden', guessHidden: 'Das eigentliche Wort bleibt für einen letzten Versuch noch geheim.', lastTry: 'Dein letzter Versuch', whichWord: 'Welches Wort hatten die anderen?', guessPlaceholder: 'Wort eingeben', submitGuess: 'Wort raten', imposterGuessing: 'Der Imposter rät jetzt das Wort.', resultSoon: 'Gleich wird das Ergebnis aufgedeckt.',
     gameFinished: 'Spiel beendet', roundFinished: 'Runde {round} beendet', finalScoreHint: 'Das ist der Endstand.', revealedHint: 'Die Rollen und Wörter sind jetzt aufgedeckt.', imposterWas: 'Der Imposter war', normalWord: 'Normales Wort', imposterWord: 'Imposter-Wort', winner: 'Gewinner', crew: 'Normale Spieler', decisive: '{name} erhielt die entscheidende Mehrheit.', noDecision: 'Auch die Stichwahl endete ohne eindeutige Entscheidung.', finalScore: 'Endstand', votesAndScore: 'Stimmen & Punktestand', votes: 'Stimme(n)', backLobby: 'Zurück zur Lobby', showFinal: 'Endstand anzeigen', nextRound: 'Nächste Runde', hostMovesOn: 'Der Host fährt fort.',
-    nameRequired: 'Bitte gib deinen Namen ein.', passwordMissing: 'Diese Lobby benötigt ein Passwort.', actionFailed: 'Aktion fehlgeschlagen.', reconnecting: 'Verbindung unterbrochen – Wiederverbindung läuft …', loading: 'Lädt', back: 'Zurück', joinThis: 'Dieser Lobby beitreten', lobbyNotFoundRedirect: 'Lobby {code} wurde nicht gefunden. Du wurdest zur Startseite zurückgeleitet.', runningJoinBlocked: 'Dieses Spiel läuft bereits.', updateAvailable: 'Eine neue Version ist verfügbar.', refreshPage: 'Seite aktualisieren', gameHub: 'Game Hub', imprint: 'Impressum', privacy: 'Datenschutz', legal: 'Rechtliche Hinweise', donationButton: 'Spendenhinweis öffnen', donationLink: 'Per PayPal spenden', donationText: 'In dieser Seite steckt viel Zeit. Wenn du die Arbeit unterstützen möchtest, kannst du hier gern eine kleine Spende dalassen.',
+    nameRequired: 'Bitte gib deinen Namen ein.', passwordMissing: 'Diese Lobby benötigt ein Passwort.', actionFailed: 'Aktion fehlgeschlagen.', reconnecting: 'Verbindung unterbrochen – Wiederverbindung läuft …', connectionTimeout: 'Die Verbindung antwortet nicht. Bitte versuche es erneut.', displayFailed: 'Die Spielansicht konnte nicht geladen werden.', loading: 'Lädt', back: 'Zurück', joinThis: 'Dieser Lobby beitreten', lobbyNotFoundRedirect: 'Lobby {code} wurde nicht gefunden. Du wurdest zur Startseite zurückgeleitet.', runningJoinBlocked: 'Dieses Spiel läuft bereits.', updateAvailable: 'Eine neue Version ist verfügbar.', refreshPage: 'Seite aktualisieren', gameHub: 'Game Hub', imprint: 'Impressum', privacy: 'Datenschutz', legal: 'Rechtliche Hinweise', donationButton: 'Spendenhinweis öffnen', donationLink: 'Per PayPal spenden', donationText: 'In dieser Seite steckt viel Zeit. Wenn du die Arbeit unterstützen möchtest, kannst du hier gern eine kleine Spende dalassen.',
   },
   en: {
     language: 'Language', subtitle: 'Create or join a multiplayer lobby', playerName: 'Player name',
     createLobby: 'Create lobby', joinLobby: 'Join lobby', lobbyCode: 'Lobby code', join: 'Join', passwordOptional: 'Lobby password (optional)', passwordRequired: 'Lobby password (if required)', passwordShort: 'Lobby password', passwordProtected: 'Password protected',
     openLobbies: 'Open lobbies', noLobbies: 'No open lobbies available right now.', waiting: 'Waiting', running: 'In progress', players: 'Players', player: 'Player', you: 'you', connected: 'Connected', disconnected: 'Disconnected', host: 'Host',
-    copyCode: 'Copy code', copied: 'Copied', copyFailed: 'Copy failed.', shareLobby: 'Share lobby', shareTitle: 'Imposter lobby', shareText: 'Join my Imposter lobby {code}.', leaveLobby: 'Leave lobby', startGame: 'Start game', minPlayers: 'At least 3 connected players are required.',
+    copyCode: 'Copy code', copied: 'Copied', copyFailed: 'Copy failed.', shareLobby: 'Share lobby', shareTitle: 'Imposter lobby', shareText: 'Join my Imposter lobby {code}.', leaveLobby: 'Leave lobby', startGame: 'Start game', kickPlayer: 'Remove', kickedFromLobby: 'The host removed you from the lobby.', minPlayers: 'At least 3 connected players are required.',
     settings: 'Game settings', settingsHost: 'You can change the rules until the game starts.', settingsGuest: 'Only the host can change these rules.', mode: 'Game mode', rounds: 'Rounds', roundsInfo: 'Sets how many rounds will be played in total.', clueRounds: 'Clue rounds', clueRoundsInfo: 'Sets how many conversation and clue rounds take place before each vote.', categories: 'Word categories', categoriesInfo: 'Determines which categories the words for the game are selected from.', allCategories: 'All categories',
     classicInfo: 'The Imposter receives no word and knows that they are the Imposter.', hiddenInfo: 'The Imposter receives a different word. Nobody knows who the Imposter is – not even the Imposter.',
     abort: 'Abort game', lobby: 'Lobby', points: 'pts', roundOf: 'Round {current} of {total}',
     hiddenSafely: 'Safely hidden', hiddenText: 'Your information is no longer visible.', yourRole: 'Your role', noWord: 'You received no word. Listen carefully and stay undetected.', yourWord: 'Your word', rememberWord: 'Remember it and describe it later without saying it.',
     secretInfo: 'Secret information', lookPrivately: 'Look at your screen discreetly.', confirmedWaiting: 'Confirmed – waiting for the others', understood: 'Seen and understood', ready: 'Ready', countOf: '{current} of {total}',
-    cluePhase: 'Clue phase {current} of {total}', describeWord: 'Describe your word without saying it directly.', starter: 'Starting player', begins: '{name} starts', talkTogether: 'Play the conversation round together at the table.', nextClue: 'Next clue round', startVote: 'Start voting', hostContinues: 'The host starts the next section.',
+    cluePhase: 'Clue phase {current} of {total}', describeWord: 'Describe your word without saying it directly.', speakerOrder: 'Speaking order', speakingOrderHint: 'Give your clues in this order.', talkTogether: 'Play the conversation round together at the table.', nextClue: 'Next clue round', startVote: 'Start voting', hostContinues: 'The host starts the next section.',
     runoff: 'Runoff vote', whoImposter: 'Who is the Imposter?', runoffHint: 'Only the players with the most votes can be selected.', voteFinalHint: 'Your vote is final after submitting.', voted: 'Vote submitted', submitVote: 'Submit final vote', votesCast: 'Votes cast', waitingForVotes: 'Still waiting for', allVotesSubmitted: 'All votes have been submitted.', votesSecret: 'Other players’ choices remain secret until the result.',
     caught: 'The Imposter was found', guessHidden: 'The actual word stays hidden for one final attempt.', lastTry: 'Your final attempt', whichWord: 'Which word did the others have?', guessPlaceholder: 'Enter the word', submitGuess: 'Guess word', imposterGuessing: 'The Imposter is guessing the word now.', resultSoon: 'The result will be revealed shortly.',
     gameFinished: 'Game over', roundFinished: 'Round {round} finished', finalScoreHint: 'This is the final score.', revealedHint: 'Roles and words have now been revealed.', imposterWas: 'The Imposter was', normalWord: 'Normal word', imposterWord: 'Imposter word', winner: 'Winner', crew: 'Regular players', decisive: '{name} received the decisive majority.', noDecision: 'The runoff vote also ended without a clear decision.', finalScore: 'Final score', votesAndScore: 'Votes & score', votes: 'vote(s)', backLobby: 'Back to lobby', showFinal: 'Show final score', nextRound: 'Next round', hostMovesOn: 'The host continues.',
-    nameRequired: 'Please enter your name.', passwordMissing: 'This lobby requires a password.', actionFailed: 'Action failed.', reconnecting: 'Connection lost – reconnecting …', loading: 'Loading', back: 'Back', joinThis: 'Join this lobby', lobbyNotFoundRedirect: 'Lobby {code} was not found. You have been redirected to the home page.', runningJoinBlocked: 'This game is already in progress.', updateAvailable: 'A new version is available.', refreshPage: 'Refresh page', gameHub: 'Game Hub', imprint: 'Imprint', privacy: 'Privacy', legal: 'Legal information', donationButton: 'Open donation link', donationLink: 'Donate via PayPal', donationText: 'This project took a lot of time to build. If you want to support that work, you can leave a small donation here.',
+    nameRequired: 'Please enter your name.', passwordMissing: 'This lobby requires a password.', actionFailed: 'Action failed.', reconnecting: 'Connection lost – reconnecting …', connectionTimeout: 'The connection is not responding. Please try again.', displayFailed: 'The game view could not be loaded.', loading: 'Loading', back: 'Back', joinThis: 'Join this lobby', lobbyNotFoundRedirect: 'Lobby {code} was not found. You have been redirected to the home page.', runningJoinBlocked: 'This game is already in progress.', updateAvailable: 'A new version is available.', refreshPage: 'Refresh page', gameHub: 'Game Hub', imprint: 'Imprint', privacy: 'Privacy', legal: 'Legal information', donationButton: 'Open donation link', donationLink: 'Donate via PayPal', donationText: 'This project took a lot of time to build. If you want to support that work, you can leave a small donation here.',
   },
 }
 const CATEGORY_TEXT = {
@@ -62,8 +63,18 @@ let donationOpen = false
 let routeReconnectPending = /^\/(lobby|game)\/[A-Z0-9]{5}\/?$/i.test(location.pathname)
 let currentPageVersion = null
 let pageUpdateAvailable = false
+let wasKicked = false
 
 const t = (key, vars = {}) => Object.entries(vars).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, String(value)), TEXT[language][key] || TEXT.de[key] || key)
+
+function savedConfig() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(configKey))
+    const chosenCategories = [...new Set((Array.isArray(parsed?.categories) ? parsed.categories : []).filter((category) => CATEGORIES.includes(category)))]
+    if (!['classic', 'hidden'].includes(parsed?.mode) || ![3, 5, 7, 10].includes(parsed?.rounds) || ![1, 2, 3].includes(parsed?.clueRounds) || !chosenCategories.length) return null
+    return { mode: parsed.mode, rounds: parsed.rounds, clueRounds: parsed.clueRounds, categories: chosenCategories }
+  } catch { return null }
+}
 
 function renderUpdateNotice() {
   updateMessage.textContent = t('updateAvailable')
@@ -93,7 +104,10 @@ const scopedRoute = () => {
 }
 const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char])
 const player = (id) => state?.players.find((item) => item.id === id)
-const call = (event, payload = {}) => new Promise((resolve) => socket.emit(event, payload, resolve))
+const call = (event, payload = {}) => new Promise((resolve) => {
+  const timeout = setTimeout(() => resolve({ ok: false, error: t('connectionTimeout') }), 8000)
+  socket.emit(event, payload, (result) => { clearTimeout(timeout); resolve(result) })
+})
 const notify = (message) => { toast.textContent = message; toast.hidden = false; clearTimeout(notify.timer); notify.timer = setTimeout(() => { toast.hidden = true }, 3500) }
 const errorHtml = () => `<div class="error-box" data-error ${uiError ? '' : 'hidden'}>${escapeHtml(uiError)}</div>`
 const showError = (message) => { uiError = message; const box = document.querySelector('[data-error]'); if (box) { box.textContent = message; box.hidden = false } }
@@ -152,7 +166,7 @@ function homeView() {
     <section class="panel"><h3 class="lobby-list-title">${t('openLobbies')}</h3><div id="lobby-list">${lobbyListHtml()}</div></section>
   </section>`)
   document.querySelector('#code').addEventListener('input', (event) => { draftCode = event.target.value.toUpperCase() })
-  document.querySelector('[data-create]').addEventListener('click', async () => { const name = homeName(); if (name) await action('create', { name, password: document.querySelector('#create-password').value.trim() || undefined, sessionToken: token }) })
+  document.querySelector('[data-create]').addEventListener('click', async () => { const name = homeName(); if (name) await action('create', { name, password: document.querySelector('#create-password').value.trim() || undefined, sessionToken: token, config: savedConfig() || undefined }) })
   document.querySelector('[data-join]').addEventListener('click', () => joinCode(document.querySelector('#code').value, document.querySelector('#join-password').value))
   document.querySelector('#create').addEventListener('submit', (event) => { event.preventDefault(); document.querySelector('[data-create]').click() })
   document.querySelector('#join').addEventListener('submit', (event) => { event.preventDefault(); document.querySelector('[data-join]').click() })
@@ -205,7 +219,7 @@ function shell(content, side = true) {
 function lobbyView() {
   const cfg = state.config
   const categories = CATEGORIES.map((category) => `<label class="check"><input type="checkbox" name="category" value="${category}" ${cfg.categories.includes(category) ? 'checked' : ''} ${state.isHost ? '' : 'disabled'}><span>${categoryLabel(category)}</span></label>`).join('')
-  const players = state.players.map((p) => `<div class="panel"><div class="spread"><strong class="player-name">${escapeHtml(p.name)} ${p.id === state.selfId ? `<span class="muted">(${t('you')})</span>` : ''}</strong><span class="status ${p.connected ? 'status-online' : 'status-offline'}">${p.connected ? t('connected') : t('disconnected')}</span></div><div class="row lobby-copy-row"><span class="muted">${p.isHost ? t('host') : t('player')}</span></div></div>`).join('')
+  const players = state.players.map((p) => `<div class="panel"><div class="spread"><strong class="player-name">${escapeHtml(p.name)} ${p.id === state.selfId ? `<span class="muted">(${t('you')})</span>` : ''}</strong><span class="status ${p.connected ? 'status-online' : 'status-offline'}">${p.connected ? t('connected') : t('disconnected')}</span></div><div class="row lobby-copy-row"><span class="muted">${p.isHost ? t('host') : t('player')}</span>${state.isHost && !p.isHost ? `<button class="btn btn-danger lobby-kick" type="button" data-kick-player="${p.id}">${t('kickPlayer')}</button>` : ''}</div></div>`).join('')
   setView(`<div class="lobby-main-grid">
     <section class="panel"><div class="spread"><div><h2 class="lobby-heading">${t('lobby')} ${state.code}<button type="button" class="lobby-share-button" data-share aria-label="${t('shareLobby')}" title="${t('shareLobby')}"><svg aria-hidden="true" class="lobby-share-icon" viewBox="0 0 24 24"><path d="M8.6 10.2 15.4 6.4"></path><path d="M8.6 13.8 15.4 17.6"></path><circle cx="6.5" cy="12" r="2.5"></circle><circle cx="17.5" cy="5.25" r="2.5"></circle><circle cx="17.5" cy="18.75" r="2.5"></circle></svg></button>${state.hasPassword ? `<span class="lobby-lock-indicator" aria-label="${t('passwordProtected')}" title="${t('passwordProtected')}">🔒</span>` : ''}</h2><div class="row lobby-copy-row"><button class="btn" data-copy>${t('copyCode')}</button><span class="status" data-copy-status hidden>${t('copied')}</span></div></div><span class="status">${t('waiting')}</span></div>
       ${errorHtml()}
@@ -228,6 +242,7 @@ function lobbyView() {
     box.hidden = !opening
     button.setAttribute('aria-expanded', String(opening))
   }))
+  document.querySelectorAll('[data-kick-player]').forEach((button) => button.addEventListener('click', () => action('kick-player', { playerId: button.dataset.kickPlayer })))
   if (state.isHost) document.querySelector('#settings').addEventListener('change', async (event) => {
     const boxes = [...document.querySelectorAll('[name="category"]')]
     if (event.target.id === 'all-categories') {
@@ -235,7 +250,9 @@ function lobbyView() {
       if (!event.target.checked) boxes.find((box) => box.value === 'Allgemein').checked = true
     } else document.querySelector('#all-categories').checked = boxes.every((box) => box.checked)
     const chosen = boxes.filter((box) => box.checked).map((box) => box.value)
-    await action('update-config', { mode: document.querySelector('#mode').value, rounds: Number(document.querySelector('#rounds').value), clueRounds: Number(document.querySelector('#clues').value), categories: chosen })
+    const config = { mode: document.querySelector('#mode').value, rounds: Number(document.querySelector('#rounds').value), clueRounds: Number(document.querySelector('#clues').value), categories: chosen }
+    const result = await action('update-config', config)
+    if (result?.ok) localStorage.setItem(configKey, JSON.stringify(config))
   })
 }
 
@@ -251,7 +268,8 @@ function revealView() {
 }
 
 function clueView() {
-  setView(shell(`${gameHeader(t('cluePhase', { current: state.round.clueRound, total: state.config.clueRounds }), t('describeWord'))}<section class="panel result-callout"><div class="eyebrow">${t('starter')}</div><h2>${t('begins', { name: escapeHtml(player(state.round.starterId)?.name || '—') })}</h2><p class="muted">${t('talkTogether')}</p></section>${state.isHost ? `<button class="btn btn-primary" data-advance>${state.round.clueRound < state.config.clueRounds ? t('nextClue') : t('startVote')}</button>` : `<p class="muted">${t('hostContinues')}</p>`}`))
+  const order = (state.round.speakerOrderIds || [state.round.starterId]).map((id, index) => `<li><span class="avatar">${index + 1}</span><strong class="player-name">${escapeHtml(player(id)?.name || '—')}</strong></li>`).join('')
+  setView(shell(`${gameHeader(t('cluePhase', { current: state.round.clueRound, total: state.config.clueRounds }), t('describeWord'))}<section class="panel"><div class="eyebrow">${t('speakerOrder')}</div><h2>${t('speakingOrderHint')}</h2><ol class="speaker-order">${order}</ol><p class="muted">${t('talkTogether')}</p></section>${state.isHost ? `<button class="btn btn-primary" data-advance>${state.round.clueRound < state.config.clueRounds ? t('nextClue') : t('startVote')}</button>` : `<p class="muted">${t('hostContinues')}</p>`}`))
 }
 
 function voteView() {
@@ -358,7 +376,11 @@ socket.on('state', (view) => {
   routeReconnectPending = false
   uiError = ''
   history.replaceState({}, '', state.phase === 'lobby' ? `/lobby/${state.code}` : `/game/${state.code}`)
-  render()
+  try { render() } catch (error) {
+    console.error('Render error', error)
+    app.innerHTML = `<section class="panel join-page"><h2>${t('displayFailed')}</h2><button class="btn btn-primary" data-render-reload>${t('refreshPage')}</button></section>`
+    document.querySelector('[data-render-reload]')?.addEventListener('click', () => location.reload())
+  }
 })
 socket.on('lobby-list', (list) => {
   lobbyList = Array.isArray(list) ? list : []
@@ -366,18 +388,25 @@ socket.on('lobby-list', (list) => {
   if (!state && joinCodeFromPath()) render()
   else renderLobbyList()
 })
+socket.on('kicked', () => {
+  wasKicked = true
+  state = null
+  uiError = t('kickedFromLobby')
+  history.replaceState({}, '', '/')
+  render()
+})
 socket.on('connect', async () => {
   void checkForPageUpdate()
   const route = scopedRoute()
   if (route) {
     const result = await call('reconnect-session', { sessionToken: token, code: route.code })
-    if (!result?.ok) { state = null; routeReconnectPending = false; render() }
+    if (!result?.ok) { state = null; routeReconnectPending = false; uiError = result?.error || t('connectionTimeout'); render() }
     return
   }
   const result = await call('reconnect-session', { sessionToken: token })
   if (!result?.ok) { state = null; render() }
 })
-socket.on('disconnect', () => showError(t('reconnecting')))
+socket.on('disconnect', () => { if (!wasKicked) showError(t('reconnecting')) })
 document.documentElement.lang = language
 document.addEventListener('pointerdown', (event) => {
   if (donationOpen && !event.target.closest?.('.site-donate')) { donationOpen = false; renderFooter() }

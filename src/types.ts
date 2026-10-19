@@ -31,6 +31,7 @@ export interface RoundState {
   imposterWord: string
   category: Category
   starterId: string
+  speakerOrderIds: string[]
   clueRound: number
   confirmed: Set<string>
   votes: Map<string, string>
@@ -75,6 +76,7 @@ export interface ClientView {
     number: number
     clueRound: number
     starterId: string
+    speakerOrderIds: string[]
     confirmedCount: number
     votedCount: number
     allowedCandidateIds: string[]

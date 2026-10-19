@@ -80,6 +80,7 @@ const getContext = (socket: Socket) => {
 }
 const hostOnly = (lobby: Lobby, player: Player) => { if (lobby.hostId !== player.id) throw new Error('Nur der Host kann diese Aktion ausführen.') }
 const connectedPlayers = (lobby: Lobby) => lobby.players.filter((player) => player.connected)
+const allConnectedPlayersVoted = (lobby: Lobby) => connectedPlayers(lobby).every((player) => lobby.round!.votes.has(player.id))
 const publicLobbyList = () => [...lobbies.values()]
   .filter((lobby) => lobby.phase !== 'finished' && connectedPlayers(lobby).length > 0)
   .map((lobby) => ({
@@ -116,7 +117,8 @@ const detachPreviousSession = (sessionToken: string, targetCode: string) => {
 }
 const resolveVote = (lobby: Lobby) => {
   const round = lobby.round!
-  const { tied, counts } = tally(round, connectedPlayers(lobby).map((p) => p.id))
+  const connectedIds = connectedPlayers(lobby).map((player) => player.id)
+  const { tied, counts } = tally(round, connectedIds, connectedIds)
   round.voteCounts = counts
   if (tied.length > 1 && !round.runoffUsed) {
     round.runoffUsed = true; round.runoffCandidates = tied; round.votes.clear(); lobby.phase = 'runoff'; return
@@ -130,9 +132,9 @@ const resolveVote = (lobby: Lobby) => {
 io.on('connection', (socket) => {
   socket.emit('lobby-list', publicLobbyList())
   socket.on('create', (raw, ack) => { try {
-    const input = identitySchema.extend({ password: passwordSchema }).parse(raw); const code = generateCode()
+    const input = identitySchema.extend({ password: passwordSchema, config: configSchema.optional() }).parse(raw); const code = generateCode()
     const player: Player = { id: crypto.randomUUID(), name: input.name, sessionToken: input.sessionToken, connected: true, score: 0, imposterRounds: 0, wins: 0 }
-    const lobby: Lobby = { code, hostId: player.id, players: [player], config: structuredClone(DEFAULT_CONFIG), phase: 'lobby', round: null, usedPairs: new Set(), lastImposterId: null }
+    const lobby: Lobby = { code, hostId: player.id, players: [player], config: structuredClone(input.config ?? DEFAULT_CONFIG), phase: 'lobby', round: null, usedPairs: new Set(), lastImposterId: null }
     lobbies.set(code, lobby)
     if (input.password) lobbyPasswordHashes.set(code, hashPassword(input.password))
     enter(socket, lobby, player); reply(ack, { ok: true, code })
@@ -165,6 +167,24 @@ io.on('connection', (socket) => {
     lobby.config = configSchema.parse(raw) as GameConfig; emitLobby(lobby); reply(ack, { ok: true })
   } catch (error) { reply(ack, { ok: false, error: errorMessage(error) }) } })
 
+  socket.on('kick-player', (raw, ack) => { try {
+    const { lobby, player } = getContext(socket); hostOnly(lobby, player)
+    if (lobby.phase !== 'lobby') throw new Error('Spieler können nur in der Lobby entfernt werden.')
+    const targetId = z.string().uuid().parse(raw?.playerId)
+    if (targetId === player.id) throw new Error('Du kannst dich nicht selbst entfernen.')
+    const target = lobby.players.find((candidate) => candidate.id === targetId)
+    if (!target) throw new Error('Spieler nicht gefunden.')
+    lobby.players = lobby.players.filter((candidate) => candidate.id !== targetId)
+    sessions.delete(target.sessionToken)
+    const targetSockets = [...sockets.entries()].filter(([, sessionToken]) => sessionToken === target.sessionToken)
+    for (const [socketId] of targetSockets) {
+      io.to(socketId).emit('kicked')
+      sockets.delete(socketId)
+      io.sockets.sockets.get(socketId)?.disconnect(true)
+    }
+    emitLobby(lobby); reply(ack, { ok: true })
+  } catch (error) { reply(ack, { ok: false, error: errorMessage(error) }) } })
+
   socket.on('start', (_raw, ack) => { try {
     const { lobby, player } = getContext(socket); hostOnly(lobby, player); if (connectedPlayers(lobby).length < 3) throw new Error('Mindestens 3 verbundene Spieler werden benötigt.')
     lobby.round = createRound(lobby); lobby.phase = 'reveal'; emitLobby(lobby); reply(ack, { ok: true })
@@ -189,7 +209,7 @@ io.on('connection', (socket) => {
     if (lobby.round!.votes.has(player.id)) throw new Error('Deine Stimme ist bereits final abgegeben.')
     const allowed = lobby.phase === 'runoff' ? lobby.round!.runoffCandidates : connectedPlayers(lobby).map((p) => p.id)
     if (!allowed.includes(targetId)) throw new Error('Diese Person steht nicht zur Wahl.')
-    lobby.round!.votes.set(player.id, targetId); if (lobby.round!.votes.size === connectedPlayers(lobby).length) resolveVote(lobby)
+    lobby.round!.votes.set(player.id, targetId); if (allConnectedPlayersVoted(lobby)) resolveVote(lobby)
     emitLobby(lobby); reply(ack, { ok: true })
   } catch (error) { reply(ack, { ok: false, error: errorMessage(error) }) } })
 
@@ -227,7 +247,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => { try { const { lobby, player } = getContext(socket); sockets.delete(socket.id)
     const stillConnected = [...sockets.values()].includes(player.sessionToken); player.connected = stillConnected
-    if (!stillConnected && (lobby.phase === 'vote' || lobby.phase === 'runoff') && lobby.round!.votes.size === connectedPlayers(lobby).length) resolveVote(lobby)
+    if (!stillConnected && (lobby.phase === 'vote' || lobby.phase === 'runoff')) {
+      lobby.round!.votes.delete(player.id)
+      if (allConnectedPlayersVoted(lobby)) resolveVote(lobby)
+    }
     emitLobby(lobby)
   } catch {} })
 })

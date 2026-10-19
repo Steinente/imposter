@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildView, chooseImposter, choosePair, normalizeGuess, tally } from './game.js'
+import { buildView, chooseImposter, choosePair, createSpeakerOrder, normalizeGuess, tally } from './game.js'
 import { categories, type Lobby, type Player, type RoundState } from './types.js'
 import { wordPairs } from './words.js'
 
@@ -8,6 +8,11 @@ const players: Player[] = ['a', 'b', 'c'].map((id, index) => ({ id, name: id, se
 describe('game rules', () => {
   it('avoids the previous imposter and favors the least used players', () => {
     expect(chooseImposter(players, 'b').id).toBe('c')
+  })
+  it('creates a complete speaker order that differs from the previous round', () => {
+    const order = createSpeakerOrder(players, ['a', 'b', 'c'])
+    expect(new Set(order)).toEqual(new Set(['a', 'b', 'c']))
+    expect(order).not.toEqual(['a', 'b', 'c'])
   })
   it('does not repeat a pair before the category is exhausted', () => {
     const used = new Set<string>()
@@ -26,11 +31,15 @@ describe('game rules', () => {
     const round = { votes: new Map([['a', 'b'], ['b', 'a']]) } as RoundState
     expect(tally(round, ['a', 'b', 'c']).tied).toEqual(['a', 'b'])
   })
+  it('ignores votes from players who are no longer connected', () => {
+    const round = { votes: new Map([['a', 'b'], ['b', 'a'], ['c', 'a']]) } as RoundState
+    expect(tally(round, ['a', 'b'], ['a', 'b']).counts).toEqual({ a: 1, b: 1 })
+  })
 
   it('keeps the personal word or Classic role available after reveal', () => {
     const round = {
       number: 1, imposterId: 'a', mainWord: 'Katze', imposterWord: 'Hund', category: 'Tiere',
-      starterId: 'b', clueRound: 1, confirmed: new Set(), votes: new Map(), runoffCandidates: [],
+      starterId: 'b', speakerOrderIds: ['b', 'c', 'a'], clueRound: 1, confirmed: new Set(), votes: new Map(), runoffCandidates: [],
       runoffUsed: false, selectedId: null, voteCounts: {}, winner: null, guessCorrect: null,
     } satisfies RoundState
     const lobby = {
@@ -48,7 +57,7 @@ describe('game rules', () => {
   it('only lets the imposter submit a guess during the guess phase', () => {
     const round = {
       number: 1, imposterId: 'a', mainWord: 'Katze', imposterWord: 'Hund', category: 'Tiere',
-      starterId: 'b', clueRound: 1, confirmed: new Set(), votes: new Map(), runoffCandidates: [],
+      starterId: 'b', speakerOrderIds: ['b', 'c', 'a'], clueRound: 1, confirmed: new Set(), votes: new Map(), runoffCandidates: [],
       runoffUsed: false, selectedId: 'a', voteCounts: {}, winner: null, guessCorrect: null,
     } satisfies RoundState
     const lobby = {
