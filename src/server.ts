@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
@@ -16,7 +17,26 @@ const lobbyPasswordHashes = new Map<string, string>()
 const sessions = new Map<string, { code: string; playerId: string }>()
 const sockets = new Map<string, string>()
 const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public')
+const publicVersion = (() => {
+  const hash = crypto.createHash('sha256')
+  const addDirectory = (directory: string) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const entryPath = path.join(directory, entry.name)
+      if (entry.isDirectory()) addDirectory(entryPath)
+      else if (entry.isFile()) {
+        hash.update(path.relative(publicDir, entryPath).replaceAll(path.sep, '/'))
+        hash.update(fs.readFileSync(entryPath))
+      }
+    }
+  }
+  addDirectory(publicDir)
+  return hash.digest('hex').slice(0, 16)
+})()
 app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }))
+app.get('/version', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.status(200).json({ version: publicVersion })
+})
 app.use(express.static(publicDir))
 app.get('/join/:code', (_req, res) => res.sendFile(path.join(publicDir, 'index.html')))
 app.get('/lobby/:code', (_req, res) => res.sendFile(path.join(publicDir, 'index.html')))

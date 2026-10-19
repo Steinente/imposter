@@ -84,6 +84,9 @@ h1 { margin-bottom: 6px; }
 .error, .error-box { border: 1px solid #7f1d1d; background: rgb(127 29 29 / .25); color: #fecaca; border-radius: 10px; padding: 11px; }
 .error-box[hidden] { display: none !important; }
 .toast { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: min(90vw, 480px); padding: 12px 16px; border-radius: 10px; background: #020617; border: 1px solid var(--border); box-shadow: 0 10px 30px #0008; }
+.update-notice { position: fixed; z-index: 60; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); width: min(92vw, 620px); display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px; border: 1px solid rgb(228 188 72 / .7); border-radius: 12px; background: #162033; box-shadow: 0 14px 36px rgb(0 0 0 / .4); }
+.update-notice[hidden] { display: none !important; }
+.update-notice .btn { flex: 0 0 auto; }
 .persistent-secret { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-color: rgb(212 167 44 / .55); }
 .persistent-secret-label { color: var(--muted); font-size: .85rem; }
 .persistent-secret-value { color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.65rem); font-weight: 800; overflow-wrap: anywhere; text-align: right; }
@@ -118,6 +121,7 @@ h1 { margin-bottom: 6px; }
 @media (max-width: 900px) { .page-shell { padding: 10px; } .home-actions-grid { grid-template-columns: 1fr; } .home-top-spread { flex-direction: column; } .home-language-box { width: 100%; min-width: 0; } }
 @media (max-width: 760px) { .grid-2, .grid-main { grid-template-columns: 1fr; } .spread { align-items: flex-start; flex-wrap: wrap; } }
 @media (max-width: 430px) { .category-grid { grid-template-columns: 1fr; } .btn { width: 100%; } .row .status { width: auto; } .panel { padding: 14px; } }
+@media (max-width: 520px) { .update-notice { align-items: stretch; flex-direction: column; text-align: center; } }
 @media (max-width: 480px) { .page-shell { padding: 8px; } .panel { padding: 12px; border-radius: 12px; } }
 @media (max-width: 640px) { .site-legal { padding: 4px 12px 14px; } .site-legal-inner { grid-template-columns: 1fr; grid-template-areas: 'donate' 'links'; } .site-legal-links { grid-area: links; grid-column: auto; } .site-donate { grid-area: donate; grid-column: auto; justify-self: center; } .site-donate-popover { right: 50%; transform: translateX(50%); } .lobby-list-actions { width: 100%; justify-content: stretch; } }
 @media (max-height: 520px) and (orientation: landscape) { .page-shell { padding: 10px; } .secret { padding: 18px; } .secret-word { font-size: 2.4rem; } }

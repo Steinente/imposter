@@ -3,6 +3,9 @@ const socket = io()
 const app = document.querySelector('#app')
 const footer = document.querySelector('#site-footer')
 const toast = document.querySelector('#toast')
+const updateNotice = document.querySelector('#update-notice')
+const updateMessage = document.querySelector('#update-message')
+const updateButton = document.querySelector('#update-button')
 const CATEGORIES = ['Allgemein', 'Tiere', 'Essen & Trinken', 'Berufe', 'Orte', 'Gegenstände', 'Filme & Serien', 'Spiele', 'Sport', 'Natur']
 const tokenKey = 'imposter.sessionToken'
 const nameKey = 'imposter.playerName'
@@ -25,7 +28,7 @@ const TEXT = {
     runoff: 'Stichwahl', whoImposter: 'Wer ist der Imposter?', runoffHint: 'Nur die meistgewählten Personen stehen erneut zur Wahl.', voteFinalHint: 'Deine Stimme ist nach dem Absenden final.', voted: 'Stimme abgegeben', submitVote: 'Stimme final abgeben', votesCast: 'Abgestimmt', waitingForVotes: 'Noch ausstehend', allVotesSubmitted: 'Alle Stimmen wurden abgegeben.', votesSecret: 'Die Auswahl der anderen bleibt bis zur Auflösung geheim.',
     caught: 'Der Imposter wurde gefunden', guessHidden: 'Das eigentliche Wort bleibt für einen letzten Versuch noch geheim.', lastTry: 'Dein letzter Versuch', whichWord: 'Welches Wort hatten die anderen?', guessPlaceholder: 'Wort eingeben', submitGuess: 'Wort raten', imposterGuessing: 'Der Imposter rät jetzt das Wort.', resultSoon: 'Gleich wird das Ergebnis aufgedeckt.',
     gameFinished: 'Spiel beendet', roundFinished: 'Runde {round} beendet', finalScoreHint: 'Das ist der Endstand.', revealedHint: 'Die Rollen und Wörter sind jetzt aufgedeckt.', imposterWas: 'Der Imposter war', normalWord: 'Normales Wort', imposterWord: 'Imposter-Wort', winner: 'Gewinner', crew: 'Normale Spieler', decisive: '{name} erhielt die entscheidende Mehrheit.', noDecision: 'Auch die Stichwahl endete ohne eindeutige Entscheidung.', finalScore: 'Endstand', votesAndScore: 'Stimmen & Punktestand', votes: 'Stimme(n)', backLobby: 'Zurück zur Lobby', showFinal: 'Endstand anzeigen', nextRound: 'Nächste Runde', hostMovesOn: 'Der Host fährt fort.',
-    nameRequired: 'Bitte gib deinen Namen ein.', passwordMissing: 'Diese Lobby benötigt ein Passwort.', actionFailed: 'Aktion fehlgeschlagen.', reconnecting: 'Verbindung unterbrochen – Wiederverbindung läuft …', loading: 'Lädt', back: 'Zurück', joinThis: 'Dieser Lobby beitreten', lobbyNotFoundRedirect: 'Lobby {code} wurde nicht gefunden. Du wurdest zur Startseite zurückgeleitet.', runningJoinBlocked: 'Dieses Spiel läuft bereits.', gameHub: 'Game Hub', imprint: 'Impressum', privacy: 'Datenschutz', legal: 'Rechtliche Hinweise', donationButton: 'Spendenhinweis öffnen', donationLink: 'Per PayPal spenden', donationText: 'In dieser Seite steckt viel Zeit. Wenn du die Arbeit unterstützen möchtest, kannst du hier gern eine kleine Spende dalassen.',
+    nameRequired: 'Bitte gib deinen Namen ein.', passwordMissing: 'Diese Lobby benötigt ein Passwort.', actionFailed: 'Aktion fehlgeschlagen.', reconnecting: 'Verbindung unterbrochen – Wiederverbindung läuft …', loading: 'Lädt', back: 'Zurück', joinThis: 'Dieser Lobby beitreten', lobbyNotFoundRedirect: 'Lobby {code} wurde nicht gefunden. Du wurdest zur Startseite zurückgeleitet.', runningJoinBlocked: 'Dieses Spiel läuft bereits.', updateAvailable: 'Eine neue Version ist verfügbar.', refreshPage: 'Seite aktualisieren', gameHub: 'Game Hub', imprint: 'Impressum', privacy: 'Datenschutz', legal: 'Rechtliche Hinweise', donationButton: 'Spendenhinweis öffnen', donationLink: 'Per PayPal spenden', donationText: 'In dieser Seite steckt viel Zeit. Wenn du die Arbeit unterstützen möchtest, kannst du hier gern eine kleine Spende dalassen.',
   },
   en: {
     language: 'Language', subtitle: 'Create or join a multiplayer lobby', playerName: 'Player name',
@@ -41,7 +44,7 @@ const TEXT = {
     runoff: 'Runoff vote', whoImposter: 'Who is the Imposter?', runoffHint: 'Only the players with the most votes can be selected.', voteFinalHint: 'Your vote is final after submitting.', voted: 'Vote submitted', submitVote: 'Submit final vote', votesCast: 'Votes cast', waitingForVotes: 'Still waiting for', allVotesSubmitted: 'All votes have been submitted.', votesSecret: 'Other players’ choices remain secret until the result.',
     caught: 'The Imposter was found', guessHidden: 'The actual word stays hidden for one final attempt.', lastTry: 'Your final attempt', whichWord: 'Which word did the others have?', guessPlaceholder: 'Enter the word', submitGuess: 'Guess word', imposterGuessing: 'The Imposter is guessing the word now.', resultSoon: 'The result will be revealed shortly.',
     gameFinished: 'Game over', roundFinished: 'Round {round} finished', finalScoreHint: 'This is the final score.', revealedHint: 'Roles and words have now been revealed.', imposterWas: 'The Imposter was', normalWord: 'Normal word', imposterWord: 'Imposter word', winner: 'Winner', crew: 'Regular players', decisive: '{name} received the decisive majority.', noDecision: 'The runoff vote also ended without a clear decision.', finalScore: 'Final score', votesAndScore: 'Votes & score', votes: 'vote(s)', backLobby: 'Back to lobby', showFinal: 'Show final score', nextRound: 'Next round', hostMovesOn: 'The host continues.',
-    nameRequired: 'Please enter your name.', passwordMissing: 'This lobby requires a password.', actionFailed: 'Action failed.', reconnecting: 'Connection lost – reconnecting …', loading: 'Loading', back: 'Back', joinThis: 'Join this lobby', lobbyNotFoundRedirect: 'Lobby {code} was not found. You have been redirected to the home page.', runningJoinBlocked: 'This game is already in progress.', gameHub: 'Game Hub', imprint: 'Imprint', privacy: 'Privacy', legal: 'Legal information', donationButton: 'Open donation link', donationLink: 'Donate via PayPal', donationText: 'This project took a lot of time to build. If you want to support that work, you can leave a small donation here.',
+    nameRequired: 'Please enter your name.', passwordMissing: 'This lobby requires a password.', actionFailed: 'Action failed.', reconnecting: 'Connection lost – reconnecting …', loading: 'Loading', back: 'Back', joinThis: 'Join this lobby', lobbyNotFoundRedirect: 'Lobby {code} was not found. You have been redirected to the home page.', runningJoinBlocked: 'This game is already in progress.', updateAvailable: 'A new version is available.', refreshPage: 'Refresh page', gameHub: 'Game Hub', imprint: 'Imprint', privacy: 'Privacy', legal: 'Legal information', donationButton: 'Open donation link', donationLink: 'Donate via PayPal', donationText: 'This project took a lot of time to build. If you want to support that work, you can leave a small donation here.',
   },
 }
 const CATEGORY_TEXT = {
@@ -57,8 +60,31 @@ let draftCode = ''
 let uiError = ''
 let donationOpen = false
 let routeReconnectPending = /^\/(lobby|game)\/[A-Z0-9]{5}\/?$/i.test(location.pathname)
+let currentPageVersion = null
+let pageUpdateAvailable = false
 
 const t = (key, vars = {}) => Object.entries(vars).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, String(value)), TEXT[language][key] || TEXT.de[key] || key)
+
+function renderUpdateNotice() {
+  updateMessage.textContent = t('updateAvailable')
+  updateButton.textContent = t('refreshPage')
+  updateNotice.hidden = !pageUpdateAvailable
+}
+
+async function checkForPageUpdate() {
+  try {
+    const response = await fetch('/version', { cache: 'no-store' })
+    if (!response.ok) return
+    const { version } = await response.json()
+    if (typeof version !== 'string' || !version) return
+    if (currentPageVersion && currentPageVersion !== version) {
+      pageUpdateAvailable = true
+      renderUpdateNotice()
+    } else if (!currentPageVersion) currentPageVersion = version
+  } catch {
+    // A temporary network error should not interrupt the game.
+  }
+}
 const categoryLabel = (category) => CATEGORY_TEXT[category]?.[language === 'de' ? 0 : 1] || category
 const joinCodeFromPath = () => location.pathname.match(/^\/join\/([A-Z0-9]{5})\/?$/i)?.[1]?.toUpperCase() || ''
 const scopedRoute = () => {
@@ -281,7 +307,7 @@ function bindCommon() {
     const currentName = document.querySelector('#name')?.value.trim()
     if (currentName) localStorage.setItem(nameKey, currentName)
     draftCode = document.querySelector('#code')?.value.trim().toUpperCase() || draftCode
-    language = event.target.value; localStorage.setItem(languageKey, language); document.documentElement.lang = language; render()
+    language = event.target.value; localStorage.setItem(languageKey, language); document.documentElement.lang = language; render(); renderUpdateNotice()
   }))
   const showCopiedStatus = () => {
     const status = document.querySelector('[data-copy-status]')
@@ -341,6 +367,7 @@ socket.on('lobby-list', (list) => {
   else renderLobbyList()
 })
 socket.on('connect', async () => {
+  void checkForPageUpdate()
   const route = scopedRoute()
   if (route) {
     const result = await call('reconnect-session', { sessionToken: token, code: route.code })
@@ -356,4 +383,9 @@ document.addEventListener('pointerdown', (event) => {
   if (donationOpen && !event.target.closest?.('.site-donate')) { donationOpen = false; renderFooter() }
 })
 window.addEventListener('scroll', () => { if (donationOpen) { donationOpen = false; renderFooter() } }, { passive: true })
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void checkForPageUpdate() })
+updateButton.addEventListener('click', () => location.reload())
+setInterval(() => void checkForPageUpdate(), 60_000)
+renderUpdateNotice()
+void checkForPageUpdate()
 render()
