@@ -91,17 +91,9 @@ export function buildView(lobby: Lobby, self: Player, hasPassword = false): Clie
       imposterId: resolved ? round.imposterId : null, mainWord: resolved ? round.mainWord : null,
       imposterWord: resolved && lobby.config.mode === 'hidden' ? round.imposterWord : null,
       winner: resolved ? round.winner : null,
-      guessOptions: lobby.phase === 'guess' && self.id === round.imposterId
-        ? shuffle([round.mainWord, ...shuffle(wordPairs.filter((p) => p.category === round.category && p.main !== round.mainWord).map((p) => p.main)).slice(0, 5)])
-        : [],
+      canGuess: lobby.phase === 'guess' && self.id === round.imposterId,
     } : null,
   }
 }
 
-function shuffle<T>(items: T[]): T[] {
-  const copy = [...items]
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j]!, copy[i]!]
-  }
-  return copy
-}
+export const normalizeGuess = (word: string): string => word.normalize('NFKC').trim().toLocaleLowerCase('de-DE')

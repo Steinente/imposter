@@ -85,6 +85,6 @@ export interface ClientView {
     mainWord: string | null
     imposterWord: string | null
     winner: 'crew' | 'imposter' | null
-    guessOptions: string[]
+    canGuess: boolean
   }
 }

@@ -89,6 +89,11 @@ h1 { margin-bottom: 6px; }
 .persistent-secret-value { color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.65rem); font-weight: 800; overflow-wrap: anywhere; text-align: right; }
 .vote-submit { margin-top: 16px; }
 .vote-progress { margin-top: 12px; margin-bottom: 12px; }
+.vote-waiting { margin: 14px 0; }
+.waiting-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
+.waiting-list li { padding: 5px 9px; border: 1px solid var(--border); border-radius: 999px; background: rgb(15 23 42 / .55); color: var(--muted); font-size: .9rem; }
+.vote-complete { margin: 14px 0; color: #86efac; font-weight: 700; }
+.guess-form { display: grid; gap: 12px; width: min(100%, 460px); margin: 20px auto 0; text-align: left; }
 .footer-note { margin-top: 12px; text-align: center; color: var(--muted); font-size: .8rem; }
 .lobby-list-title { margin: 0; }
 .lobby-list-grid { display: grid; gap: 10px; margin-top: 12px; }

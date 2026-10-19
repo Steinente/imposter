@@ -5,7 +5,7 @@ import express from 'express'
 import { createServer } from 'node:http'
 import { Server, type Socket } from 'socket.io'
 import { z } from 'zod'
-import { applyScore, buildView, createRound, DEFAULT_CONFIG, tally } from './game.js'
+import { applyScore, buildView, createRound, DEFAULT_CONFIG, normalizeGuess, tally } from './game.js'
 import { categories, type GameConfig, type Lobby, type Player } from './types.js'
 
 const app = express()
@@ -175,7 +175,8 @@ io.on('connection', (socket) => {
 
   socket.on('guess', (raw, ack) => { try {
     const { lobby, player } = getContext(socket); if (lobby.phase !== 'guess' || lobby.round!.imposterId !== player.id) throw new Error('Du darfst nicht raten.')
-    const guess = z.string().min(1).max(40).parse(raw?.word); lobby.round!.guessCorrect = guess === lobby.round!.mainWord
+    const guess = z.string().trim().min(1).max(40).parse(raw?.word)
+    lobby.round!.guessCorrect = normalizeGuess(guess) === normalizeGuess(lobby.round!.mainWord)
     applyScore(lobby, lobby.round!.guessCorrect ? 'imposter' : 'crew'); lobby.phase = 'result'; emitLobby(lobby); reply(ack, { ok: true })
   } catch (error) { reply(ack, { ok: false, error: errorMessage(error) }) } })
 
