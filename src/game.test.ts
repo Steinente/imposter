@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildView, chooseImposter, choosePair, normalizeGuess, tally } from './game.js'
-import type { Lobby, Player, RoundState } from './types.js'
+import { categories, type Lobby, type Player, type RoundState } from './types.js'
+import { wordPairs } from './words.js'
 
 const players: Player[] = ['a', 'b', 'c'].map((id, index) => ({ id, name: id, sessionToken: id, connected: true, score: 0, imposterRounds: index ? 0 : 1, wins: 0 }))
 
@@ -13,6 +14,13 @@ describe('game rules', () => {
     const first = choosePair({ mode: 'hidden', rounds: 3, clueRounds: 1, categories: ['Tiere'] }, used)
     const second = choosePair({ mode: 'hidden', rounds: 3, clueRounds: 1, categories: ['Tiere'] }, used)
     expect(first.main).not.toBe(second.main)
+  })
+  it('provides at least 15 unique word pairs per category', () => {
+    for (const category of categories) {
+      expect(wordPairs.filter((pair) => pair.category === category).length).toBeGreaterThanOrEqual(15)
+    }
+    const words = wordPairs.flatMap((pair) => [pair.main, pair.alternate].map((word) => word.toLocaleLowerCase('de-DE')))
+    expect(new Set(words).size).toBe(words.length)
   })
   it('detects a tie deterministically', () => {
     const round = { votes: new Map([['a', 'b'], ['b', 'a']]) } as RoundState
